@@ -54,7 +54,7 @@ for(let i = 12;i>0;i--){
     hour.firstElementChild.insertAdjacentHTML("afterend",option);
 }
 // Set Minute values
-for(let i = 59;i>0;i--){
+for(let i = 59;i>=0;i--){
     i = i<10?"0"+i:i;
     let option = ` <option value="${i}">${i}</option>`;
     minute.firstElementChild.insertAdjacentHTML("afterend",option);
