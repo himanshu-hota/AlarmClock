@@ -29,15 +29,24 @@ About the Project :-
 💻 Screenshots :-  
   
    🔴 Landing Page:-
+   
   ![image](https://user-images.githubusercontent.com/62291769/199785631-1233a11d-f8a7-4d6f-8492-dac15ccec554.png)
 
    🔴 After setting alarm :-
+   
    ![image](https://user-images.githubusercontent.com/62291769/199785952-0040a58f-55e0-4b96-bdce-f02676ca5d2a.png)
 
    🔴 If user returns to previous closed page :-
+   
    ![image](https://user-images.githubusercontent.com/62291769/199786054-7af178f0-c78b-49cb-889a-b3a4853023ca.png)
    
 
+  ------------------------------------------------------------------------------------------------------------------------------------------------------
+  
+  🚦Versions:-
+  
+    1.0 - Added Local Storage to the base Project
+  
   ------------------------------------------------------------------------------------------------------------------------------------------------------
   
  🙎 Contact .
