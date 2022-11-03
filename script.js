@@ -1,7 +1,6 @@
 const hour = document.querySelector('#hour');
 const minute = document.querySelector('#minute');
 const AmPm = document.querySelector('#ampm');
-let CurrentTime = document.querySelector('#currentTime');
 const setAlarmBtn = document.querySelector('#setBtn');
 const content = document.querySelector('#content');
 const ringTone = new Audio('files/ringtone.mp3');
@@ -9,8 +8,8 @@ const secondBtn = document.querySelector('#secondBtn');
 const body = document.querySelector('body');
 const resumeBtn = document.querySelector('#resumeBtn');
 const welcomeBackScreen = document.querySelector('#welcomeBack');
-    
-
+const alarmTimeIndicator = document.querySelector('#alarmText');
+let CurrentTime = document.querySelector('#currentTime');
 // CHeck if user has exited webpage
 if(!localStorage.getItem('userExited')){
     localStorage.setItem('userExited','false');
@@ -20,6 +19,15 @@ if(!localStorage.getItem('userExited')){
         welcomeBackScreen.className = 'welcomeBack flex';
     }       
 }
+
+// Play eingtone continously on resume
+if(!localStorage.getItem('wantToPlay')){
+    localStorage.setItem('wantToPlay','no');
+}
+
+// Hide Alarm indicator if alarm is not set
+if(localStorage.getItem('alarmTime') == "00:00:AM")
+alarmTimeIndicator.className ="d-none";
 
 // Add class to content
 if(!localStorage.getItem('contentClass')){
@@ -68,44 +76,45 @@ for(let i = 2;i>0;i--){
 
 
 // Play Alarm function
-const playAlarm = () => {
-    ringTone.play();
+const playAlarm = ()=> {
+    if( (localStorage.getItem('userExited') == 'xxx')  || (localStorage.getItem('wantToPlay' == 'yes')) ){
+        ringTone.play();
+    }
+    // console.log(localStorage.getItem('userExited'));
     ringTone.loop = true;
 }
-    
-// Runs every Second
+
 setInterval(() => {
-    let date = new Date();
-    let h = date.getHours();
-    let m = date.getMinutes();
-    let s = date.getSeconds();
-    let ampm = "AM";
+        let date = new Date();
+        let h = date.getHours();
+        let m = date.getMinutes();
+        let s = date.getSeconds();
+        let ampm = "AM";
+    
+        // 12 Hour Format
+        if(h > 12){
+            h = h-12;
+            ampm = "PM";
+        }
+    
+        // if hour value is 0 then set it to 12
+        h = h==0 ? h = 12 : h;
+        // Adding 0 before h , m ,s 
+        h = h <10 ? "0" + h : h;
+        m = m <10 ? "0" + m : m;
+        s = s <10 ? "0" + s : s;
+    
+        // Update time every second
+        currentTime.textContent = `${h}:${m}:${s} ${ampm}`;
+    
+        // Play ringtone if alarm time mathces with current time
+        if( (localStorage.getItem('alarmTime') == `${h}:${m}:${ampm}`)  || (localStorage.getItem('wantToPlay') == 'yes') ){
+            playAlarm();
+        }   
+    
+    }, 1000);
 
-    // 12 Hour Format
-    if(h > 12){
-        h = h-12;
-        ampm = "PM";
-    }
 
-    // if hour value is 0 then set it to 12
-    h = h==0 ? h = 12 : h;
-    // Adding 0 before h , m ,s 
-    h = h <10 ? "0" + h : h;
-    m = m <10 ? "0" + m : m;
-    s = s <10 ? "0" + s : s;
-
-    // Update time every second
-    currentTime.textContent = `${h}:${m}:${s} ${ampm}`;
-
-    // Play ringtone if alarm time mathces with current time
-    if(localStorage.getItem('alarmTime') == `${h}:${m}:${ampm}`){
-        playAlarm();
-    }   
-
-    // Clear console
-    console.clear();
-
-}, 1000);
 
 // Set alarm 
 const setAlarm = () => {
@@ -123,6 +132,11 @@ const setAlarm = () => {
         setAlarmBtn.textContent = localStorage.getItem('btnText');
         // Hide resume button
         resumeBtn.hidden = true
+        // Reset alarm indicator
+        alarmTimeIndicator.textContent = "Alarm Time set to: " ;
+        alarmTimeIndicator.className ="d-none";
+        // Set want to play to no to stop alarm
+        localStorage.setItem('wantToPlay','no')
         // Return
         return localStorage.setItem('isAlarmSet' , 'false');
     }
@@ -144,12 +158,25 @@ const setAlarm = () => {
     // Set button text to "Clear Alarm";
     localStorage.setItem('btnText','Clear Alarm')
     setAlarmBtn.textContent = localStorage.getItem('btnText');
+    // Set Alarm Time indicator
+    alarmTimeIndicator.textContent = "Alarm Time set to: " + localStorage.getItem('alarmTime');
+    alarmTimeIndicator.className ="";
+    // Set user exited to false to avoid DOM exception
+    localStorage.setItem('userExited', 'xxx');
 }
+
 
 
 // Hide Welcome Screen
 const hideWelcomeScreen = () => {
+    // hide WelcomeScreen
     welcomeBackScreen.className = 'd-none';
+    // Set alarm time indicator
+    alarmTimeIndicator.textContent = "Alarm Time set to: " + localStorage.getItem('alarmTime');
+    // Set userExited to xxx to avoid DomException
+    localStorage.setItem('userExited', 'xxx');
+    // Set want to play to play ringtone even if time has expired 
+    localStorage.setItem('wantToPlay', 'yes');
 }
 
 // --------------------Eventlisteners-----------------------------
@@ -159,9 +186,9 @@ setAlarmBtn.addEventListener('click',setAlarm);
 // Resume Button
 resumeBtn.addEventListener('click',hideWelcomeScreen);
 
+// Check if user has exited the page or refreshed
 const beforeUnloadListener = (event) => {
     localStorage.setItem('userExited','true');
 };
-// Check if user has exited the page or refreshed
 window.addEventListener("beforeunload", beforeUnloadListener);
 
