@@ -24,6 +24,7 @@ if(!localStorage.getItem('userExited')){
 // Add class to content
 if(!localStorage.getItem('contentClass')){
     localStorage.setItem('contentClass','content flex');
+    content.className = localStorage.getItem('contentClass');
 }else{
     content.className = localStorage.getItem('contentClass');
 }
@@ -31,6 +32,7 @@ if(!localStorage.getItem('contentClass')){
 // Set button text
 if(!localStorage.getItem('btnText')){
     localStorage.setItem('btnText','Set Alarm');
+    setAlarmBtn.textContent = localStorage.getItem('btnText');
 }else{
     setAlarmBtn.textContent = localStorage.getItem('btnText');
 }
